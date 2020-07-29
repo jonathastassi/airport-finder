@@ -1,0 +1,73 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport
+      [attr.role]="'dialog'"
+      mode="over"
+      style="width: 300px; padding: 10px;"
+       position="end">
+    <mat-toolbar>Buscar aeroportos</mat-toolbar>
+
+    <mat-form-field class="example-form-field" appearance="fill">
+      <mat-label>Local</mat-label>
+      <input matInput type="text" [(ngModel)]="address">
+      <button mat-button *ngIf="address" matSuffix mat-icon-button aria-label="Clear" (click)="address=''">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <mat-form-field class="example-form-field" appearance="fill">
+      <mat-label>Distância</mat-label>
+      <input matInput type="number" min="0" max="99999999" [(ngModel)]="distance">
+      <button mat-button *ngIf="distance" matSuffix mat-icon-button aria-label="Clear" (click)="distance=''">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <mat-form-field class="example-form-field" appearance="fill">
+      <mat-label>Tipo de aeroporto</mat-label>
+      <select matNativeControl [(ngModel)]="typeAirport">
+        <option value="0">Todos</option>
+        <option value="1">Municipal</option>
+        <option value="2">Internacional</option>
+      </select>
+    </mat-form-field>
+
+    <button mat-flat-button style="width: 100%;" color="primary" (click)="getAirport()">Buscar</button>
+
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <mat-toolbar-row>
+        <span>Airport Finder</span>
+        <span class="example-spacer"></span>
+        <span style="cursor: pointer;" (click)="drawer.toggle()">Buscar</span>
+        <button type="button" mat-icon-button aria-label="Toggle sidenav" (click)="drawer.toggle()">
+          <mat-icon aria-label="Side nav toggle icon">edit_location</mat-icon>
+        </button>
+      </mat-toolbar-row>
+    </mat-toolbar>
+    <div *ngIf="loading">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    </div>
+
+    <google-map
+    height="90%"
+    width="100%"
+    [zoom]="zoom"
+    [center]="center"
+    [options]="options"
+    >
+    <map-marker
+    #markerElem
+    *ngFor="let marker of markers"
+    [position]="{ lat: marker.latitude, lng: marker.longitude }"
+    [label]="marker.name"
+    [title]="marker.name"
+    (mapClick)="openInfo(markerElem, marker.info)"
+  >
+  </map-marker>
+
+  <map-info-window>{{ infoContent }}</map-info-window>
+  </google-map>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>
