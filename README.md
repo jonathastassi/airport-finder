@@ -11,10 +11,14 @@ Fiz a minha implementação com uma API em Net Core e o Front em Angular, com o 
 * Angular Material
 * Angular Maps (https://www.npmjs.com/package/@angular/google-maps)
 
+### Dados para usar de exemplo
+
+1. Local: Miami
+2. Distancia: 185
+
 ### Criando o container do MongoDB no Docker
 
 1. docker run --name mongo -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=mongo -e MONGO_INITDB_ROOT_PASSWORD=1qaz2wsx -v /home/jonathas/Databases/MongoDB:/data/db -d mongo
-
 
 ### Copiando o BD geo para container
 
