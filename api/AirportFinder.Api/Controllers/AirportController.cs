@@ -31,10 +31,10 @@ namespace AirportFinder.Api.Controllers
             var airportNearest = new List<Coordinate>();
             airportNearest.Add(coordinate);
 
-            double lat = Convert.ToDouble(coordinate.Latitude);
             double lon = Convert.ToDouble(coordinate.Longitude);
+            double lat = Convert.ToDouble(coordinate.Latitude);
 
-            string typeAirport = "";
+            string typeAirport = string.Empty;
 
             if (homeViewModel.TypeAirport == ETypeAirport.international) 
             {
@@ -45,27 +45,27 @@ namespace AirportFinder.Api.Controllers
                 typeAirport = "municipal";
             }
 
-            int distance = homeViewModel.Distance * 100000;
+            double distance = homeViewModel.Distance * 1000;
 
-            var localization = new GeoJsonPoint<GeoJson2DGeographicCoordinates>(new GeoJson2DGeographicCoordinates(lat, lon));
+            var localization = new GeoJsonPoint<GeoJson2DGeographicCoordinates>(new GeoJson2DGeographicCoordinates(lon, lat));
 
             var constructor = Builders<Airport>.Filter;
             FilterDefinition<Airport> filter;
 
-            if (typeAirport == "0") 
+            if (typeAirport == string.Empty) 
             {
-                filter = constructor.NearSphere(x => x.loc, localization, distance);
+                filter = constructor.NearSphere<GeoJson2DGeographicCoordinates>(x => x.loc, localization, distance);
             }
             else 
             {
-                filter = constructor.NearSphere(x => x.loc, localization, distance) & constructor.Eq(x => x.type, typeAirport);
+                filter = constructor.NearSphere<GeoJson2DGeographicCoordinates>(x => x.loc, localization, distance) & constructor.Eq(x => x.type, typeAirport);
             }
 
             var listAirport = await this.connection.Airports.Find(filter).ToListAsync();
 
             foreach (var airport in listAirport)
             {
-                airportNearest.Add(new Coordinate(airport.name, airport.loc.Coordinates.Latitude.ToString().Replace(",", "."), airport.loc.Coordinates.Longitude.ToString().Replace(",", ".")));
+                airportNearest.Add(new Coordinate(airport.name, airport.loc.Coordinates.Longitude.ToString(), airport.loc.Coordinates.Latitude.ToString()));
             }
 
             return Ok(airportNearest);
@@ -82,8 +82,8 @@ namespace AirportFinder.Api.Controllers
             if (googleGeocode.status == "OK") 
             {
                 coord.Name = googleGeocode.results[0].formatted_address;
-                coord.Latitude = googleGeocode.results[0].geometry.location.lat;
                 coord.Longitude = googleGeocode.results[0].geometry.location.lng;
+                coord.Latitude = googleGeocode.results[0].geometry.location.lat;
             }
 
             return coord;

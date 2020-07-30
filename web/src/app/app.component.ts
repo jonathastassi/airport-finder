@@ -21,10 +21,10 @@ export class AppComponent implements OnInit {
 
   @ViewChild('drawer', {static: false}) drawer: MatSidenav;
 
-  @ViewChild(GoogleMap, { static: false }) map: GoogleMap;
   @ViewChild(MapInfoWindow, { static: false }) info: MapInfoWindow;
 
-  infoContent = ''
+  infoContent = '';
+  markerOptions = {draggable: false};
 
   constructor(private service: AirportService) {
 
@@ -73,6 +73,9 @@ export class AppComponent implements OnInit {
   }
 
   openInfo(marker: MapMarker, content) {
+    console.log(marker);
+    console.log(content);
+
     this.infoContent = content
     this.info.open(marker)
   }
